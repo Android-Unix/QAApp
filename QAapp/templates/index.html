@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block buttons %}
+  {% if user.is_authenticated %}
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+    </ul>
+      <button class="btn btn-outline-danger my-2 my-sm-0 mr-2 ml-auto" onclick = "btnLogoutClicked()">Logout</button>
+  </div>
+  {% else %}
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+      </ul>
+        <button class="btn btn-outline-primary my-2 my-sm-0 mr-2 ml-auto" onclick = "btnSignUpClicked()">SignUP</button>
+        <button class="btn btn-outline-secondary my-2 my-sm-0 mr-4" onclick = "btnSignInClicked()">Sign In</button>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <div class = "container">
+      Welcome {{ user.username }}
+      <button class="btn btn-outline-warning my-2 my-sm-0 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
+    </div>
+  {% else %}
+    <div class = "container">
+      <h2> HomePage Content</h2>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script type = "text/javascript" >
+  function btnSignUpClicked(){
+    location.href = "{% url 'signup' %}";
+  }
+
+  function btnSignInClicked(){
+    location.href = "{% url 'login' %}";
+  }
+
+  function btnLogoutClicked(){
+    location.href = "{% url 'logout' %}"
+  }
+
+  function addQuestion(){
+    location.href = "{% url 'addQuestion' %}"
+  }
+</script>
+{% endblock %}
