@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class = "container mt-4">
   <form method="post">
     {% csrf_token %}
-    {{ generateForm.as_p }}
+    {{ generateForm | crispy }}
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">SignUP</button
   </form>
 </div>

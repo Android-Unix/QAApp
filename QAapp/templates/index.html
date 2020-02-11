@@ -18,7 +18,7 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    <div class = "container">
+    <div class = "container mt-4">
       Welcome {{ user.username }}
       <button class="btn btn-outline-warning my-2 my-sm-0 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
     </div>
@@ -43,7 +43,7 @@
     location.href = "{% url 'logout' %}"
   }
 
-  function addQuestion(){
+  function btnAddQuestion(){
     location.href = "{% url 'addQuestion' %}"
   }
 </script>
