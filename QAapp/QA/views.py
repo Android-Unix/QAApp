@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .questionform import CreateQuestion
+from .questionform import CreateQuestion , CreateAnswerForm
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import Question
+from .models import Question , Answer
 
 # Create your views here.
 
@@ -37,7 +37,9 @@ def addQuestion(request) :
         add = CreateQuestion(request.POST)
         if add.is_valid() :
             add.save()
-            return render(request , 'success.html')
+            return render(request , 'success.html' , {
+                'tag' : 'Question Added'
+            })
 
     else :
         add = CreateQuestion()
@@ -70,4 +72,21 @@ def updateQuestion(request , question_id) :
 
     return render(request , 'QuestionForm.html' , {
         'renderForm' : UpdateQuestion
+    })
+
+def answerQuestion(request , question_id) :
+    if request.method == 'POST' :
+        form = CreateAnswerForm(request.POST)
+        
+        if form.is_valid :
+            form.save()
+            return render(request, 'success.html' , {
+                'tag' : 'Answer Submitted!'
+            })
+
+    else:
+        form = CreateAnswerForm()
+
+    return render(request , 'answerForm.html' , {
+        'renderForm' : form
     })

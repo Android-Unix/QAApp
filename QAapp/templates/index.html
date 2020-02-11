@@ -26,13 +26,13 @@
           <li class="list-group-item list-group-item-info">
             {{ q }}
             <div class = container-ml-4>
-              <button id = "{{ forloop.counter }}" class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion(this.id)">Update</button>
+              <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion({{ q.pk }})">Update</button>
             </div>
           </li>
         {% endfor %}
       {% else %}
         {% for q in questions %}
-          <li class="list-group-item list-group-item-info">
+          <li class="list-group-item list-group-item-info" onclick="questionClicked({{ q.pk }})">
             <div class = "container" >
               {{ q.question }}
             </div>
@@ -70,9 +70,14 @@
     location.href = "{% url 'addQuestion' %}"
   }
 
-  function updateQuestion(btnid){
-    console.log(btnid);
-    location.href  = "update/" + btnid;
+  function updateQuestion(pk){
+    console.log(pk);
+    location.href  = "update/" + pk;
   }
+
+  function questionClicked(question_id){
+    location.href = "answer/" + question_id;
+  }
+
 </script>
 {% endblock %}

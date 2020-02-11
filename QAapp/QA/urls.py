@@ -9,4 +9,5 @@ urlpatterns = [
     path('addquestion/' , views.addQuestion , name = 'addQuestion') ,
     path('restricted/' , views.unauthorisedAccess , name = 'restrict') ,
     path('update/<int:question_id>' , views.updateQuestion , name = 'update') ,
+    path('answer/<int:question_id>' , views.answerQuestion , name = 'answer') ,
 ]
