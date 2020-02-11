@@ -19,8 +19,29 @@
 {% block content %}
   {% if user.is_authenticated %}
     <div class = "container mt-4">
-      Welcome {{ user.username }}
-      <button class="btn btn-outline-warning my-2 my-sm-0 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
+      <h2>Welcome {{ user.username }}</h2>
+      {% if user.username == 'admin' %}
+        <button class="btn btn-outline-warning mb-4 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
+        {% for q in questions %}
+          <li class="list-group-item list-group-item-info">
+            {{ q }}
+            <div class = container-ml-4>
+              <button id = "{{ forloop.counter }}" class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion(this.id)">Update</button>
+            </div>
+          </li>
+        {% endfor %}
+      {% else %}
+        {% for q in questions %}
+          <li class="list-group-item list-group-item-info">
+            <div class = "container" >
+              {{ q.question }}
+            </div>
+            <div class = "container mb-2">
+              <h6> Marks : {{ q.marks }} </h6>
+            </div>
+          </li>
+        {% endfor %}
+      {% endif %}
     </div>
   {% else %}
     <div class = "container">
@@ -28,6 +49,8 @@
     </div>
   {% endif %}
 {% endblock %}
+
+
 
 {% block scripts %}
 <script type = "text/javascript" >
@@ -45,6 +68,11 @@
 
   function btnAddQuestion(){
     location.href = "{% url 'addQuestion' %}"
+  }
+
+  function updateQuestion(btnid){
+    console.log(btnid);
+    location.href  = "update/" + btnid;
   }
 </script>
 {% endblock %}
