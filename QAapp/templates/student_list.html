@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2 class="mb-4">To check the answers submitted by these students click on the students...</h2>
+    {% for student in page_obj %}
+        <li class="list-group-item list-group-item-warning mb-1">
+            {{ student }}
+        </li>
+    {% endfor %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
+
+        <li class="page-item">
+            {% if page_obj.has_previous %}
+            <a class="page-link" href="?page=1">&laquo; first</a>
+            {% endif %}
+        </li>
+
+        <li class="page-item">
+            {% if page_obj.has_previous %}
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+        </li>
+
+        <li class="page-item">
+            <a class="page-link" href="#">
+            Page {{ page_obj.number }}.
+            </a>
+        </li>
+        
+        <li class="page-item">
+            {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </li>
+
+        <li class="page-item">
+            {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </li>
+        </ul>
+    </nav>
+{% endblock %}

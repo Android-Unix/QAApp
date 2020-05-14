@@ -4,14 +4,14 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
     </ul>
-      <button class="btn btn-outline-danger my-2 my-sm-0 mr-2 ml-auto" onclick = "btnLogoutClicked()">Logout</button>
+      <button class="btn btn-danger my-2 my-sm-0 mr-2 ml-auto" onclick = "btnLogoutClicked()">Logout</button>
   </div>
   {% else %}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
       </ul>
-        <button class="btn btn-outline-primary my-2 my-sm-0 mr-2 ml-auto" onclick = "btnSignUpClicked()">SignUP</button>
-        <button class="btn btn-outline-secondary my-2 my-sm-0 mr-4" onclick = "btnSignInClicked()">Sign In</button>
+        <button class="btn btn-primary my-2 my-sm-0 mr-2 ml-auto" onclick = "btnSignUpClicked()">SignUP</button>
+        <button class="btn btn-secondary my-2 my-sm-0 mr-4" onclick = "btnSignInClicked()">Sign In</button>
     </div>
   {% endif %}
 {% endblock %}
@@ -21,28 +21,66 @@
     <div class = "container mt-4">
       <h2>Welcome {{ user.username }}</h2>
       {% if user.is_staff %}
+        <button class="btn btn-outline-success mb-4 mr-2 ml-auto" onclick = "listAllStudents({{ user.pk }})">List All Students</button>
         <button class="btn btn-outline-warning mb-4 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
-        {% for q in questions %}
+        {% for question in page_obj %}
           <li class="list-group-item list-group-item-info">
-            {{ q }}
+            {{ question }}
             <div class = container-ml-4>
-              <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion({{ q.pk }})">Update</button>
+              <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion({{ question.pk }})">Update</button>
+              <button class="btn btn-danger mt-2 mr-2 ml-auto" onclick="deleteQuestion({{ question.pk }})">Delete</button>
             </div>
           </li>
         {% endfor %}
       {% else %}
-        {% for q in questions %}
-          <li class="list-group-item list-group-item-info" onclick="questionClicked({{ q.pk }})">
-            <div class = "container" >
-              {{ q.question }}
-            </div>
-            <div class = "container mb-2">
-              <h6> Marks : {{ q.marks }} </h6>
-            </div>
-          </li>
-        {% endfor %}
-      {% endif %}
-    </div>
+      {% for question in page_obj %}
+        <li class="list-group-item list-group-item-info" onclick="questionClicked({{ question.pk }})">
+          <div class = "container" >
+            {{ question.question }}
+          </div>
+          <div class = "container mb-2">
+            <h6> Marks : {{ question.marks }} </h6>
+          </div>
+        </li>
+      {% endfor %}
+    {% endif %}
+    
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center mt-4">
+
+        <li class="page-item">
+          {% if page_obj.has_previous %}
+            <a class="page-link" href="?page=1">&laquo; first</a>
+          {% endif %}
+        </li>
+
+        <li class="page-item">
+          {% if page_obj.has_previous %}
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          {% endif %}
+        </li>
+
+        <li class="page-item">
+          <a class="btn btn-info" href="#">
+            Page {{ page_obj.number }}
+          </a>
+        </li>
+        
+        <li class="page-item">
+          {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+          {% endif %}
+        </li>
+
+        <li class="page-item">
+          {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+        
+  </div>
   {% else %}
     <div class = "container">
       <h2> HomePage Content</h2>
@@ -72,12 +110,20 @@
 
   function updateQuestion(pk){
     console.log(pk);
-    location.href  = "update/" + pk;
+    location.href  = "update/" + pk + "/";
+  }
+
+  function deleteQuestion(pk){
+    console.log(pk);
+    location.href  = "delete/" + pk + "/";
   }
 
   function questionClicked(question_id){
-    location.href = "answer/" + question_id;
+    location.href = "answer/" + question_id + "/";
   }
 
+  function listAllStudents(pk){
+    location.href = pk +"/students/";
+  }
 </script>
 {% endblock %}

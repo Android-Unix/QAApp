@@ -2,18 +2,22 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .questionform import CreateQuestion , CreateAnswerForm
+from .model_form import CreateQuestion , CreateAnswerForm
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Question , Answer
-
-# Create your views here.
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
 
 def home(request) :
-        questions = Question.objects.all()
-        return render(request , 'index.html' , {
-            'questions' : questions
-        })
+    questions = Question.objects.all().order_by('-id')
+
+    # Show 10 contacts per page.
+    paginator = Paginator(questions, 3) 
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'index.html', {'page_obj': page_obj})
 
 
 def signUP(request) :
@@ -37,15 +41,16 @@ def addQuestion(request) :
         add = CreateQuestion(request.POST)
         if add.is_valid() :
             add.save()
-            return render(request , 'success.html' , {
-                'tag' : 'Question Added'
+            return render(request , 'QuestionForm.html' , {
+                'question_addition_status' : True
             })
 
     else :
         add = CreateQuestion()
 
     return render(request , 'QuestionForm.html' , {
-        'renderForm' : add
+        'renderForm' : add,
+        'add_btn': True
     })
 
 def unauthorisedAccess(request) :
@@ -65,28 +70,66 @@ def updateQuestion(request , question_id) :
 
     if UpdateQuestion.is_valid():
         UpdateQuestion.save()
-        return render(request , 'updatesuccess.html')
+        return render(request , 'QuestionForm.html', {
+            'update_question_status': True
+        })
 
     else :
         UpdateQuestion = CreateQuestion(request.POST or None, instance = question_selected)
 
     return render(request , 'QuestionForm.html' , {
-        'renderForm' : UpdateQuestion
+        'renderForm' : UpdateQuestion,
+        'update_btn': True
+
     })
 
-def answerQuestion(request , question_id) :
-    if request.method == 'POST' :
+def answerQuestion(request , question_id):
+    question = Question.objects.get(pk=question_id).question
+    if request.method == 'POST':
         form = CreateAnswerForm(request.POST)
-        
-        if form.is_valid :
-            form.save()
-            return render(request, 'success.html' , {
-                'tag' : 'Answer Submitted!'
-            })
+        if form.is_valid:
+            username = request.user.username
 
+            answer = Answer.objects.create(user=User.objects.get(username=username), question=Question.objects.get(pk=question_id), answer=form.data['answer'])
+            answer.save()
+
+            return render(request, 'answerForm.html' , {
+                'tag' : 'Answer Submitted!',
+                'answered': True
+            })
     else:
         form = CreateAnswerForm()
 
     return render(request , 'answerForm.html' , {
-        'renderForm' : form
+        'renderForm' : form,
+        'question_name': question
     })
+
+
+def delete_question(request, question_id):
+    question_id = int(question_id)
+
+    try :
+        question_selected = Question.objects.get(id = question_id)
+        question_selected.delete()
+
+        return render(request, 'deleted_alert.html')
+
+    except Question.DoesNotExist:
+        return redirect('home')
+
+
+
+def list_students(request, lecturer_id):
+
+    students = []
+    for user in User.objects.all():
+        if not user.is_staff:
+            students.append(user)
+
+    # Show 10 contacts per page.
+    paginator = Paginator(students, 2) 
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'student_list.html', {'page_obj': page_obj})
