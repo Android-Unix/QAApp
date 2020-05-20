@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'QA.apps.QaConfig' ,
     'crispy_forms',
-    'widget_tweaks'
+    'widget_tweaks',
+    'account.apps.AccountConfig'
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+# AUTH_USER_MODEL = 'account.Account'

@@ -1,5 +1,6 @@
 from django import forms
 from .models import Question , Answer
+from account.models import Account
 
 class CreateQuestion(forms.ModelForm):
     class Meta:
@@ -10,4 +11,10 @@ class CreateAnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ['answer']
+
+
+class CreateAccountForm(forms.ModelForm):
+    class Meta():
+        model = Account
+        fields = ['first_name', 'last_name', 'dob', 'email', 'password']
 

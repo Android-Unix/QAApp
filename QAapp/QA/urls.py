@@ -6,6 +6,7 @@ urlpatterns = [
     path('' , views.home , name = 'home') ,
     path('signup/' , views.signUP , name = 'signup') ,
     path('<int:lecturer_id>/students/' , views.list_students , name = 'students') ,
+    path('<int:lecturer_id>/students/<int:student_clicked>/' , views.student_answers , name = 'student_clicked') ,
     path('accounts/' , include('django.contrib.auth.urls')) ,
     path('addquestion/' , views.addQuestion , name = 'addQuestion') ,
     path('restricted/' , views.unauthorisedAccess , name = 'restrict') ,

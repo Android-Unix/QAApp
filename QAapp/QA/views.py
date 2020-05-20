@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .model_form import CreateQuestion , CreateAnswerForm
+from .model_form import CreateQuestion, CreateAnswerForm, CreateAccountForm
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Question , Answer
 from django.contrib.auth.models import User
@@ -26,7 +26,9 @@ def signUP(request) :
 
         if forms.is_valid() :
             users = forms.save()
-            return HttpResponse("SignUp Successful")
+            return render(request, 'success.html' , {
+                'tag': 'Sign-up successful and the username is: ' + users.username
+            })
 
     else :
         forms = UserCreationForm()
@@ -133,3 +135,15 @@ def list_students(request, lecturer_id):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'student_list.html', {'page_obj': page_obj})
+
+
+def student_answers(request, lecturer_id, student_clicked):
+    student = User.objects.get(pk=student_clicked)
+    answers_of_student = Answer.objects.filter(user=student)
+
+    return render(request, 'student_answers.html', {
+        'answers': answers_of_student,
+        'username': student.username,
+        'count': answers_of_student.count(),
+        'questions_count': Question.objects.count()
+    })

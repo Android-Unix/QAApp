@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
     <h2 class="mb-4">To check the answers submitted by these students click on the students...</h2>
+    
     {% for student in page_obj %}
-        <li class="list-group-item list-group-item-warning mb-1">
+        <li class="list-group-item list-group-item-action list-group-item-warning mb-1 cursor-pointer" onclick="studentClicked({{ student.pk }})">
             {{ student }}
         </li>
     {% endfor %}
@@ -40,4 +41,22 @@
         </li>
         </ul>
     </nav>
+   
+{% endblock %}
+
+{% block scripts %}
+<script type = "text/javascript">
+    function studentClicked(student_clicked){
+        location.href = student_clicked + "/";
+        console.log(student_clicked);
+    }
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .cursor-pointer{
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
