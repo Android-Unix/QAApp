@@ -1,33 +1,38 @@
 from django.shortcuts import render
-from django.contrib.auth.forms import UserCreationForm
+from account.forms import UserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .model_form import CreateQuestion, CreateAnswerForm, CreateAccountForm
+from .model_form import CreateQuestion, CreateAnswerForm
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Question , Answer
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 
+User = get_user_model()
 
-def home(request) :
+def home(request):
     questions = Question.objects.all().order_by('-id')
 
     # Show 10 contacts per page.
-    paginator = Paginator(questions, 3) 
+    paginator = Paginator(questions, 10) 
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'index.html', {'page_obj': page_obj})
+    return render(request, 'index.html', {
+        'page_obj': page_obj,
+        'number_of_questions': Question.objects.count()
+    })
 
 
-def signUP(request) :
+def signUP(request):
     if request.method == 'POST' :
         forms = UserCreationForm(request.POST)
 
         if forms.is_valid() :
             users = forms.save()
             return render(request, 'success.html' , {
-                'tag': 'Sign-up successful and the username is: ' + users.username
+                'user_obj': users
             })
 
     else :
@@ -46,7 +51,6 @@ def addQuestion(request) :
             return render(request , 'QuestionForm.html' , {
                 'question_addition_status' : True
             })
-
     else :
         add = CreateQuestion()
 
@@ -130,7 +134,7 @@ def list_students(request, lecturer_id):
             students.append(user)
 
     # Show 10 contacts per page.
-    paginator = Paginator(students, 2) 
+    paginator = Paginator(students, 10) 
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -143,7 +147,7 @@ def student_answers(request, lecturer_id, student_clicked):
 
     return render(request, 'student_answers.html', {
         'answers': answers_of_student,
-        'username': student.username,
+        'student': student,
         'count': answers_of_student.count(),
         'questions_count': Question.objects.count()
     })

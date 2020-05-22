@@ -19,7 +19,7 @@
 {% block content %}
   {% if user.is_authenticated %}
     <div class = "container mt-4">
-      <h1 class="mt-4 mb-4">Welcome {{ user.username }}</h1>
+      <h1 class="mt-4 mb-4">Welcome {{ user.first_name }}</h1>
       {% if user.is_staff %}
         <button class="btn btn-outline-success mb-4 mr-2 ml-auto" onclick = "listAllStudents({{ user.pk }})">List All Students</button>
         <button class="btn btn-outline-warning mb-4 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
@@ -33,11 +33,15 @@
           </li>
         {% endfor %}
       {% else %}
-      <h3 class="mt-4 mb-4"><center><u>List of questions to be answered!</u></center></h3>
+      {% if number_of_questions == 0 %}
+        <h5 class="alert alert-success mt-4 mb-4"><center>No Questions Posted...Enjoy!</center></h5>
+      {% else %}
+        <h5 class="alert alert-dark mt-4 mb-4"><center>List of questions to be answered!</center></h5>
+      {% endif %}
       {% for question in page_obj %}
         <li class="list-group-item list-group-item-action list-group-item-info cursor-pointer" onclick="questionClicked({{ question.pk }})">
           <div class = "container" >
-            <h4 class="font-weight-bold">{{ question.question }}</h4>
+            <h5 class="font-weight-bold">{{ question.question }}</h5>
           </div>
           <div class = "container mb-2">
             <h6> Marks : {{ question.marks }} </h6>
@@ -45,42 +49,42 @@
         </li>
       {% endfor %}
     {% endif %}
-    
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center mt-4">
+    {% if number_of_questions != 0 %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
 
-        <li class="page-item">
-          {% if page_obj.has_previous %}
-            <a class="page-link" href="?page=1">&laquo; first</a>
-          {% endif %}
-        </li>
+          <li class="page-item">
+            {% if page_obj.has_previous %}
+              <a class="page-link" href="?page=1">&laquo; first</a>
+            {% endif %}
+          </li>
 
-        <li class="page-item">
-          {% if page_obj.has_previous %}
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-          {% endif %}
-        </li>
+          <li class="page-item">
+            {% if page_obj.has_previous %}
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+          </li>
 
-        <li class="page-item">
-          <a class="btn btn-info" href="#">
-            Page {{ page_obj.number }}
-          </a>
-        </li>
-        
-        <li class="page-item">
-          {% if page_obj.has_next %}
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
-          {% endif %}
-        </li>
+          <li class="page-item">
+            <a class="btn btn-info" href="#">
+              Page {{ page_obj.number }}
+            </a>
+          </li>
+          
+          <li class="page-item">
+            {% if page_obj.has_next %}
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+          </li>
 
-        <li class="page-item">
-          {% if page_obj.has_next %}
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-          {% endif %}
-        </li>
-      </ul>
-    </nav>
-        
+          <li class="page-item">
+            {% if page_obj.has_next %}
+              <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+          </li>
+        </ul>
+      </nav>
+    {% endif %}    
   </div>
   {% else %}
     <div class = "container">

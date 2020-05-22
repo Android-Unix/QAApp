@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
+from QAapp.settings import AUTH_USER_MODEL
 
 # Create your models here.
 class Question(models.Model) :
@@ -12,7 +13,7 @@ class Question(models.Model) :
 
 
 class Answer(models.Model) :
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='answered_users')
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name='answered_users')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.TextField()
 

@@ -1,19 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
-
+from django import forms
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, first_name, last_name, dob, password=None):
         if not email:
-            raise ValueError("User must have email")
+            raise forms.ValueError("User must have email")
         if not username:
-            raise ValueError("User must have username")
+            raise forms.ValueError("User must have username")
         if not first_name:
-            raise ValueError("User must have first_name")
+            raise forms.ValueError("User must have first_name")
         if not last_name:
-            raise ValueError("User must have last_name")
+            raise forms.ValueError("User must have last_name")
         if not dob:
-            raise ValueError("User must have dob")
+            raise forms.ValueError("User must have dob")
 
         user = self.model(
             email = self.normalize_email(email),
@@ -24,6 +24,7 @@ class AccountManager(BaseUserManager):
         )
         
         user.set_password(password)
+
         user.save(using=self._db)
         return user
 
@@ -43,7 +44,7 @@ class AccountManager(BaseUserManager):
 
         user.save(using=self._db)
         return user
-
+        
 
 class Account(AbstractBaseUser):
     email = models.EmailField(verbose_name='email', unique=True, max_length=60)
@@ -59,6 +60,7 @@ class Account(AbstractBaseUser):
     dob = models.DateTimeField(auto_now_add=False, null=False)
 
     objects = AccountManager()
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'dob']
 

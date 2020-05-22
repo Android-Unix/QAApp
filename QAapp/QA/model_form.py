@@ -13,8 +13,3 @@ class CreateAnswerForm(forms.ModelForm):
         fields = ['answer']
 
 
-class CreateAccountForm(forms.ModelForm):
-    class Meta():
-        model = Account
-        fields = ['first_name', 'last_name', 'dob', 'email', 'password']
-
