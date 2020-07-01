@@ -1,0 +1,6 @@
+QA/__pycache__/
+QA/migrations/
+QAapp/__pycache__/
+QAapp/migrations/
+account/__pycache__/
+account/migrations/

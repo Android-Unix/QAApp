@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'QA.apps.QaConfig' ,
     'crispy_forms',
     'widget_tweaks',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [

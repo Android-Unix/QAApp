@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-
+from django.contrib.auth.models import BaseUserManager, AbstractUser
+import uuid
 from django import forms
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, first_name, last_name, dob, password=None):
@@ -18,8 +18,8 @@ class AccountManager(BaseUserManager):
         user = self.model(
             email = self.normalize_email(email),
             username = username,
-            first_name = first_name,
-            last_name = last_name,
+            first_name = first_name.capitialize(),
+            last_name = last_name.capitialize(),
             dob = dob
         )
         
@@ -38,7 +38,7 @@ class AccountManager(BaseUserManager):
             password = password
         )
 
-        user.is_admin = True
+        # user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
 
@@ -46,17 +46,9 @@ class AccountManager(BaseUserManager):
         return user
         
 
-class Account(AbstractBaseUser):
+class Account(AbstractUser):
+    id = models.UUIDField(editable=False, unique=True, primary_key=True, default=uuid.uuid4)
     email = models.EmailField(verbose_name='email', unique=True, max_length=60)
-    username = models.CharField(max_length=30, unique=True)
-    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name='last login', auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
     dob = models.DateTimeField(auto_now_add=False, null=False)
 
     objects = AccountManager()
@@ -68,6 +60,7 @@ class Account(AbstractBaseUser):
         return "Email: " + str(self.email)
 
     def has_perm(self, perm, obj=None):
+        print(self.prem)
         return True
 
     def has_module_perms(self, app_label):

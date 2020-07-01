@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from QAapp.settings import AUTH_USER_MODEL
+import uuid
 
 # Create your models here.
-class Question(models.Model) :
+class Question(models.Model):
+    id = models.UUIDField(editable=False, unique=True, primary_key=True, default=uuid.uuid4)
     question = models.TextField()
     marks = models.IntegerField()
 
@@ -12,7 +14,8 @@ class Question(models.Model) :
         return (self.question + " , marks : " + str(self.marks))
 
 
-class Answer(models.Model) :
+class Answer(models.Model):
+    id = models.UUIDField(editable=False, unique=True, primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name='answered_users')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.TextField()

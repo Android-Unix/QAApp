@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils.translation import ugettext, ugettext_lazy as _ 
 from django import forms
+from django.contrib.auth.forms import UserChangeForm
 
 User = get_user_model()
 
@@ -68,3 +69,11 @@ class UserLoginForm(forms.Form):
 			raise forms.ValidationError("credentials are not correct")
 		self.cleaned_data["user_obj"] = user_obj
 		return super(UserLoginForm, self).clean(*args, **kwargs)
+
+
+class CustomUserChangeForm(UserChangeForm):
+    def __init__(self, *args, **kargs):
+        super(CustomUserChangeForm, self).__init__(*args, **kargs)
+    class Meta:
+        model = User
+        fields = ('is_staff',)

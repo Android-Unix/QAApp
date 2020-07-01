@@ -21,14 +21,14 @@
     <div class = "container mt-4">
       <h1 class="mt-4 mb-4">Welcome {{ user.first_name }}</h1>
       {% if user.is_staff %}
-        <button class="btn btn-outline-success mb-4 mr-2 ml-auto" onclick = "listAllStudents({{ user.pk }})">List All Students</button>
+        <button class="btn btn-outline-success mb-4 mr-2 ml-auto" onclick = "listAllStudents('{{ user_uuid }}')">List All Students</button>
         <button class="btn btn-outline-warning mb-4 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
         {% for question in page_obj %}
           <li class="list-group-item list-group-item-info">
-            {{ question }}
+            <h5 class="font-weight-bold mb-2">Question:</h5> {{ question.question }} <h5 class="font-weight-bold mt-2"> Marks:</h5>{{ question.marks }}
             <div class = container-ml-4>
-              <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion({{ question.pk }})">Update</button>
-              <button class="btn btn-danger mt-2 mr-2 ml-auto" onclick="deleteQuestion({{ question.pk }})">Delete</button>
+              <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion('{{ question.pk }}')">Update</button>
+              <button class="btn btn-danger mt-2 mr-2 ml-auto" onclick="deleteQuestion('{{ question.pk }}')">Delete</button>
             </div>
           </li>
         {% endfor %}
@@ -39,7 +39,7 @@
         <h5 class="alert alert-dark mt-4 mb-4"><center>List of questions to be answered!</center></h5>
       {% endif %}
       {% for question in page_obj %}
-        <li class="list-group-item list-group-item-action list-group-item-info cursor-pointer" onclick="questionClicked({{ question.pk }})">
+        <li class="list-group-item list-group-item-action list-group-item-info cursor-pointer" onclick="questionClicked('{{ question.pk }}')">
           <div class = "container" >
             <h5 class="font-weight-bold">{{ question.question }}</h5>
           </div>
@@ -128,6 +128,7 @@
   }
 
   function listAllStudents(lecturer_id){
+    console.log(lecturer_id +"/students/");
     location.href = lecturer_id +"/students/";
   }
 

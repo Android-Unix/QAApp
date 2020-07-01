@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from account.forms import UserCreationForm
+from account.forms import UserCreationForm, UserLoginForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from .model_form import CreateQuestion, CreateAnswerForm
@@ -15,21 +15,32 @@ def home(request):
     questions = Question.objects.all().order_by('-id')
 
     # Show 10 contacts per page.
-    paginator = Paginator(questions, 10) 
+    paginator = Paginator(questions, 3) 
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'index.html', {
         'page_obj': page_obj,
-        'number_of_questions': Question.objects.count()
+        'number_of_questions': Question.objects.count(),
+        'user_uuid': str(request.user.pk)
     })
 
 
 def signUP(request):
     if request.method == 'POST' :
         forms = UserCreationForm(request.POST)
+       
+        if forms.is_valid():
+            with open('log.txt', 'w') as file:
+                file.write(forms.cleaned_data['first_name'].capitalize())
+                file.write('\n')
+                file.write(forms.cleaned_data['last_name'].capitalize())
+                file.write('\n')
+                file.close()
 
-        if forms.is_valid() :
+            forms.cleaned_data['first_name'].capitalize()
+            forms.cleaned_data['last_name'].capitalize()
+
             users = forms.save()
             return render(request, 'success.html' , {
                 'user_obj': users
