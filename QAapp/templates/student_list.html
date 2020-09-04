@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2 class="mb-4">To check the answers submitted by these students click on the students...</h2>
-    
-    {% for student in page_obj %}
-        <li class="list-group-item list-group-item-action list-group-item-warning mb-1 cursor-pointer" onclick="studentClicked('{{ student.pk }}')">
-            {{ student }}
-        </li>
-    {% endfor %}
+
+    {% if not is_filtered_list %}
+        <h2 class="mb-4">To check the answers submitted by these students click on the students...</h2>
+    {%  else %}
+        <h2 class="mb-4">To check the answers submitted by these students click on the students ( All students below have answered atleast one question)</h2>
+    {% endif %}
+    <button class="btn btn-outline-primary mb-4 mr-2 ml-auto" onclick="filterBasedOnStudentsAnswered()">Filter Based on Students Answered</button>
+
+    {% if not no_students_found %}
+        {% for student in page_obj %}
+            <li class="list-group-item list-group-item-action list-group-item-warning mb-1 cursor-pointer" onclick="studentClicked('{{ student.pk }}')">
+                {{ student }}
+            </li>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            <h4><center><strong> No Students have answered any of the questions yet!!</center></strong></h4>
+        </div>
+    {% endif %}
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4">
 
@@ -49,6 +61,11 @@
     function studentClicked(student_clicked){
         location.href = student_clicked + "/";
         console.log(student_clicked);
+    }
+
+    function filterBasedOnStudentsAnswered(){
+        console.log('filterBasedOnStudentsAnswered')
+        location.href = "filter-based-on-students-answered/";
     }
 </script>
 {% endblock %}

@@ -15,7 +15,7 @@
 {% else %}
     {% for answer in answers %}
         <input class="form-control font-weight-bold" type="text" placeholder="{{ answer.question.question }}" readonly>
-        <input class="form-control mb-3" type="text" placeholder='{{ answer.answer }}'>
+        <input class="form-control mb-3" type="text" placeholder='{{ answer.answer }}' onclick="clickedAnswer('{{ answer.id }}')" style="cursor:pointer;" readonly>
     {% endfor %}
 {% endif %}
 {% endblock %}
@@ -24,6 +24,11 @@
 <script type = "text/javascript" >
   function home(){
     location.href = "{% url 'home' %}";
+  }
+
+  function clickedAnswer(clicked_answer){
+    console.log(clicked_answer)
+    location.href = "allocate-marks/" + clicked_answer + "/";
   }
  </script>
 {% endblock %}

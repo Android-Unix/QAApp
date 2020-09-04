@@ -21,34 +21,63 @@
     <div class = "container mt-4">
       <h1 class="mt-4 mb-4">Welcome {{ user.first_name }}</h1>
       {% if user.is_staff %}
-        <button class="btn btn-outline-success mb-4 mr-2 ml-auto" onclick = "listAllStudents('{{ user_uuid }}')">List All Students</button>
-        <button class="btn btn-outline-warning mb-4 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
+          <button class="btn btn-outline-success mb-4 mr-2 ml-auto" onclick = "listAllStudents('{{ user_uuid }}')">List All Students</button>
+          <button class="btn btn-outline-warning mb-4 mr-2 ml-auto" onclick = "btnAddQuestion()">Add Question</button>
+          {% for question in page_obj %}
+            <li class="list-group-item list-group-item-info">
+              <h5 class="font-weight-bold mb-2">Question:</h5> {{ question.question }} <h5 class="font-weight-bold mt-2"> Marks:</h5>{{ question.marks }}
+              <div class = container-ml-4>
+                <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion('{{ question.pk }}')">Update</button>
+                <button class="btn btn-danger mt-2 mr-2 ml-auto" onclick="deleteQuestion('{{ question.pk }}')">Delete</button>
+              </div>
+            </li>
+          {% endfor %}
+        {% else %}
+        {% if number_of_questions == 0 %}
+          <h5 class="alert alert-success mt-4 mb-4"><center>No Questions Posted...Enjoy!</center></h5>
+        {% else %}
+          <h5 class="alert alert-dark mt-4 mb-4"><center>List of questions to be answered!</center></h5>
+        {% endif %}
+    
         {% for question in page_obj %}
-          <li class="list-group-item list-group-item-info">
-            <h5 class="font-weight-bold mb-2">Question:</h5> {{ question.question }} <h5 class="font-weight-bold mt-2"> Marks:</h5>{{ question.marks }}
-            <div class = container-ml-4>
-              <button class="btn btn-warning mt-2 mr-2 ml-auto" onclick="updateQuestion('{{ question.pk }}')">Update</button>
-              <button class="btn btn-danger mt-2 mr-2 ml-auto" onclick="deleteQuestion('{{ question.pk }}')">Delete</button>
+          {% if assigned_marks_status %}
+          <li class="list-group-item list-group-item-action list-group-item-info cursor-pointer" onclick="questionClicked('{{ question.pk }}')">
+            <div class = "container" >
+              <h5 class="font-weight-bold">{{ question.question }}</h5>
+            </div>
+            <div class = "container mb-2">
+              <h6> Marks : {{ question.marks }} </h6>
+            </div>
+          </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if not assigned_marks_status %}
+          {% for question in page_obj %}
+            {% if question.related_question.count == 0 %}
+              <li class="list-group-item list-group-item-action list-group-item-info cursor-pointer" onclick="questionClicked('{{ question.pk }}')">
+                <div class = "container" >
+                  <h5 class="font-weight-bold">{{ question.question }}</h5>
+                </div>
+                <div class = "container mb-2">
+                  <h6> Marks : {{ question.marks }} </h6>
+                </div>
+              </li>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% for marks in assigned_marks %}
+          <li class="list-group-item list-group-item-action list-group-item-secondary">
+            <div class = "container" >
+              <h5 class="font-weight-bold">{{ marks.answer.question.question }}</h5>
+            </div>
+            <div class = "container mb-2">
+              <h6> Marks : {{ marks.answer.question.marks }} </h6>
+              <h6> Obtained Marks: {{ marks.allocated_marks }}/{{ marks.answer.question.marks }}</h6>
             </div>
           </li>
         {% endfor %}
-      {% else %}
-      {% if number_of_questions == 0 %}
-        <h5 class="alert alert-success mt-4 mb-4"><center>No Questions Posted...Enjoy!</center></h5>
-      {% else %}
-        <h5 class="alert alert-dark mt-4 mb-4"><center>List of questions to be answered!</center></h5>
       {% endif %}
-      {% for question in page_obj %}
-        <li class="list-group-item list-group-item-action list-group-item-info cursor-pointer" onclick="questionClicked('{{ question.pk }}')">
-          <div class = "container" >
-            <h5 class="font-weight-bold">{{ question.question }}</h5>
-          </div>
-          <div class = "container mb-2">
-            <h6> Marks : {{ question.marks }} </h6>
-          </div>
-        </li>
-      {% endfor %}
-    {% endif %}
     {% if number_of_questions != 0 %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4">
@@ -88,7 +117,22 @@
   </div>
   {% else %}
     <div class = "container">
-      <h2> HomePage Content</h2>
+      <h2 class="mb-4 font-weight-bold"> HomePage Content</h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales ultricies eros sed ultrices. Duis et ultrices risus, eu ornare nulla. Morbi accumsan, orci et pharetra rhoncus, neque arcu facilisis dui, efficitur viverra magna elit quis est. Vestibulum vel nibh non metus commodo eleifend. Aliquam laoreet, mi vel vulputate luctus, metus felis vulputate odio, et congue elit purus sollicitudin nulla. Suspendisse eget elementum urna. Suspendisse a diam dignissim, cursus odio non, congue nibh. Suspendisse vitae efficitur velit. Nulla arcu mauris, eleifend ac elementum et, euismod sit amet nulla. Cras consequat ante leo. In id placerat lacus. Suspendisse convallis lobortis nunc et fermentum. Ut porttitor felis nec tellus aliquet, non vulputate augue aliquam. Curabitur sit amet eros diam. Ut et neque in turpis dignissim luctus mattis quis magna.
+      </p>
+      <p>
+        Duis pulvinar in dui at varius. Integer at dapibus purus, at scelerisque tellus. Curabitur sollicitudin urna varius, molestie diam eu, vulputate tellus. Ut hendrerit leo purus. Nullam sem ante, blandit ac lorem et, aliquet varius libero. Duis auctor tellus massa, mattis efficitur ipsum dictum et. Etiam facilisis lacinia eros, eget fermentum dolor laoreet quis. Etiam mollis sem dictum, lobortis felis in, aliquet ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sagittis at turpis sed auctor. Donec mollis turpis sed sagittis sagittis.
+      </p>
+      <p>
+        Sed quis augue facilisis, condimentum mi at, imperdiet ipsum. In ut augue et tellus venenatis pretium eu vulputate turpis. Mauris purus risus, aliquet quis maximus id, aliquam eget orci. Nulla bibendum enim iaculis justo aliquet cursus. Donec mollis velit nec ex luctus vestibulum vitae sit amet enim. Fusce sagittis augue a quam luctus efficitur. Pellentesque ultrices lectus vitae erat vestibulum varius. Vestibulum malesuada eget ligula ullamcorper commodo. Aenean sit amet tellus ligula. Phasellus non posuere diam, id accumsan dui. Donec eget lobortis erat. In vel mauris rhoncus, maximus massa quis, mollis mi.
+      </p>  
+      <p>
+          Nulla lacinia nisl vitae ligula faucibus, quis ullamcorper enim sollicitudin. Donec diam nunc, suscipit vitae dui quis, facilisis scelerisque metus. Integer id sem ac dui ullamcorper consectetur et ac tortor. Integer finibus mauris id blandit bibendum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin faucibus volutpat imperdiet. Duis vitae cursus orci. Donec malesuada, ante vestibulum sollicitudin commodo, quam lacus consectetur nunc, at sollicitudin neque tellus et ipsum. Nullam vel elementum felis, id faucibus nunc. Praesent molestie sem ante, a mollis odio consectetur sit amet. Sed feugiat placerat lacus, a scelerisque risus commodo id. Sed feugiat, ante quis egestas dignissim, dolor arcu fermentum odio, vel aliquam libero lorem in nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc sagittis hendrerit aliquet. Curabitur tempor nulla sed dictum ullamcorper.
+      </p>  
+      <p>
+          Vestibulum dignissim felis non ipsum egestas, eget malesuada neque cursus. Sed ut neque lectus. Ut ultricies orci eget ante varius, et molestie sapien vestibulum. In neque lectus, molestie vehicula justo ut, rutrum vulputate felis. Integer purus nunc, vehicula nec nisl et, posuere fermentum magna. Proin elementum pellentesque neque, vel ultricies magna lacinia et. Proin dapibus tincidunt dolor, vitae suscipit ligula.
+      </p>
     </div>
   {% endif %}
 {% endblock %}
@@ -137,6 +181,11 @@
 
 {% block styles %}
 <style>
+  p{
+    font-size: 19px;
+    text-align: left;
+  }
+
   .cursor-pointer{
     cursor: pointer;
   }

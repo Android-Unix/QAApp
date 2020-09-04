@@ -16,14 +16,14 @@
   {% endif %}
   <div class="form-row">
     <div class="col-md-4 mb-2 mt-4">
-      <label for="validationCustom01" class="font-weight-bold">First name</label>
+      <label for="validationFirstName" class="font-weight-bold">First name</label>
         {{ generateForm.first_name|attr:"class:form-control needs-validation" }}
       <div class="invalid-feedback">
           Enter a valid FirstName
       </div>
     </div>
     <div class="col-md-4 mb-2 mt-4">
-      <label for="validationServer02" class="font-weight-bold">Last name</label>
+      <label for="validationLastName" class="font-weight-bold">Last name</label>
         {{ generateForm.last_name|attr:"class:form-control needs-validation" }}
       <div class="invalid-feedback">
         Enter a valid LastName
@@ -37,7 +37,7 @@
         </div>
           {{ generateForm.username|attr:"class:form-control needs-validation" }}
         <div class="invalid-feedback">
-          Please choose a username.
+          Please enter a username.
         </div>
       </div>
     </div>
