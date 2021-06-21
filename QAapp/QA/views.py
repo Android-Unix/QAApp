@@ -26,7 +26,7 @@ def home(request):
         status = False
 
     # Show 10 contacts per page.
-    paginator = Paginator(questions, 10) 
+    paginator = Paginator(questions, 5)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -70,17 +70,17 @@ def signUP(request):
 @staff_member_required(login_url='restrict')
 def addQuestion(request) :
     if request.method == 'POST' :
-        add = CreateQuestion(request.POST)
-        if add.is_valid() :
-            add.save()
+        form = CreateQuestion(request.POST)
+        if form.is_valid() :
+            form.save()
             return render(request , 'QuestionForm.html' , {
                 'question_addition_status' : True
             })
     else :
-        add = CreateQuestion()
+        form = CreateQuestion()
 
     return render(request , 'QuestionForm.html' , {
-        'renderForm' : add,
+        'renderForm' : form,
         'add_btn': True
     })
 
@@ -181,8 +181,10 @@ def filter_based_on_students_answered(request, lecturer_id):
     is_filtered_list = True
 
     for user in User.objects.all():
-        if not user.is_staff and user.answered_users.count() > 0:
-            filtered_students.append(user)
+        if not user.is_staff and user.answered_users.count() > 0 \
+            and user.answered_users.count() < Question.objects.count() \
+            and AssignMarks.objects.filter(answer__user__email=user.email).count() == Question.objects.count():
+                filtered_students.append(user)
 
     if len(filtered_students) > 0:
         no_students_found = False
@@ -218,10 +220,10 @@ def allocate_marks(request, lecturer_id, student_clicked, answer_clicked):
         form = AssignMarksForm(request.POST)
         
         if int(form.data['allocated_marks']) >= clicked_answer.question.marks:
-            errors.add("Allocated Marks Cannot be More than total marks man!!!")
+            errors.add(f'Allocated Marks Cannot be More than total marks man!!! Total marks that can be assigned -> {clicked_answer.question.marks}')
 
         if clicked_answer.marks_allocated_answers.count() != 0:
-            errors.add("Cannot reassign marks!!!")
+            errors.add('Cannot reassign marks!!!')
 
         if form.is_valid and int(form.data['allocated_marks']) <= clicked_answer.question.marks and clicked_answer.marks_allocated_answers.count() == 0:
             assigned_marks = AssignMarks.objects.create(answer=clicked_answer, allocated_marks=form.data['allocated_marks'])
